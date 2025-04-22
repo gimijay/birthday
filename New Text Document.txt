@@ -1,0 +1,115 @@
+import os
+from zipfile import ZipFile
+
+# Folder structure
+base_path = "/mnt/data/birthday-wish-mamu"
+public_path = os.path.join(base_path, "public")
+src_path = os.path.join(base_path, "src")
+
+# Files to be created
+os.makedirs(public_path, exist_ok=True)
+os.makedirs(src_path, exist_ok=True)
+
+# Create index.html for public folder
+with open(os.path.join(public_path, "index.html"), "w") as f:
+    f.write("""<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Happy Birthday Mamu</title>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>""")
+
+# Create main React code in src
+with open(os.path.join(src_path, "App.js"), "w") as f:
+    f.write("""import React from 'react';
+import { motion } from 'framer-motion';
+import './App.css';
+
+const BirthdayPage = () => {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 to-purple-200 flex flex-col items-center justify-center p-6">
+      <motion.img
+        src="/sweet-mamu.jpg"
+        alt="Sweet Mamu"
+        className="w-48 h-48 rounded-full shadow-lg border-4 border-white mb-6"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1 }}
+      />
+
+      <motion.h1
+        className="text-4xl md:text-5xl font-bold text-purple-800 text-center mb-4"
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.3, duration: 0.8 }}
+      >
+        Happy Birthday, Arslan Mamu! 🎉
+      </motion.h1>
+
+      <motion.p
+        className="text-lg md:text-xl text-gray-700 text-center max-w-2xl"
+        initial={{ y: 50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.6, duration: 1 }}
+      >
+        Aaj ka din sirf aapke liye hai, Sweet Mamu! 💙 Aap mere guide, support aur inspiration ho. Aap jese log duniya mein kam milte hain — aur mein lucky hoon ke aap mere Mamu hain. Khush raho, sehatmand raho, aur hamesha muskurate raho! 💫
+        <br />
+        <br />
+        <span className="font-semibold">— Sir Emmad</span>
+      </motion.p>
+    </div>
+  );
+};
+
+export default BirthdayPage;
+""")
+
+# Basic App.css file
+with open(os.path.join(src_path, "App.css"), "w") as f:
+    f.write("body { margin: 0; font-family: sans-serif; }\n")
+
+# index.js for rendering
+with open(os.path.join(src_path, "index.js"), "w") as f:
+    f.write("""import React from 'react';
+import ReactDOM from 'react-dom/client';
+import BirthdayPage from './App';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <BirthdayPage />
+  </React.StrictMode>
+);""")
+
+# package.json file
+with open(os.path.join(base_path, "package.json"), "w") as f:
+    f.write("""{
+  "name": "birthday-wish-mamu",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "framer-motion": "^10.16.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build"
+  }
+}""")
+
+# Create zip
+zip_path = base_path + ".zip"
+with ZipFile(zip_path, 'w') as zipf:
+    for foldername, subfolders, filenames in os.walk(base_path):
+        for filename in filenames:
+            file_path = os.path.join(foldername, filename)
+            zipf.write(file_path, os.path.relpath(file_path, base_path))
+
+zip_path
